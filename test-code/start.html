@@ -1,0 +1,128 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta http-equiv="X-UA-Compatible" content="ie=edge">
+  <title>시작하기 -- Vue.js</title>
+  <!-- Vue CDN -->
+  <script src="https://cdn.jsdelivr.net/npm/vue"></script>
+</head>
+<body>
+  <div id="app">
+    {{ message }}
+  </div>
+
+  <div id="app2">
+    <span v-bind:title="message">
+      마우스 올려놓으면 동적 바인딩 title이 보임
+    </span>
+  </div>
+
+  <div id="app3">
+    <p v-if="seen">이제 나를 볼 수 있어용</p>
+  </div>
+
+  <div id="app4">
+    <ol>
+      <li v-for="todo in todos">
+        {{ todo.text }}
+      </li>
+    </ol>
+  </div>
+
+  <div id="app5">
+    <p>{{ message }}</p>
+    <button v-on:click="reverseMessage">메세지 뒤집기</button>
+  </div>
+
+  <div id="app6">
+    <p>{{ message }}</p>
+    <input type="text" v-model="message">
+  </div>
+
+  <div id="app7">
+    <ol>
+      <todo-item
+        v-for="item in groceryList"
+        v-bind:todo='item'
+        v-bind:key='item.id'>
+      </todo-item>
+    </ol>
+  </div>
+
+</body>
+
+<script>
+  // 동적으로 message를 보여귀
+  var app = new Vue({
+    el: '#app',
+    data: {
+      message: '안녕하세요 Vue!'
+    }
+  });
+
+  // v-bind:title을 사용해서 hover 되었을 때 title 을 출력
+  var app2 = new Vue({
+    el: '#app2',
+    data: {
+      message: '보여라..'
+    }
+  });
+
+  // v-if 문을 사용해서 보여주거나 보여주지 않거나
+  var app3 = new Vue({
+    el: '#app3',
+    data: {
+      seen: true
+    }
+  })
+
+  // v-for="todo in todos"를 사용하여 반복
+  var app4 = new Vue({
+    el: '#app4',
+    data: {
+      todos: [
+        { text: 'Javascript 만들기' },
+        { text: '보이니' },
+        { text: '그렇지?' },
+      ]
+    }
+  })
+
+  var app5 = new Vue({
+    el: '#app5',
+    data: {
+      message: '안녕하세요! Vue.js!'
+    },
+    methods: {
+      reverseMessage: function() {
+        this.message = this.message.split('').reverse().join('')
+      }
+    }
+  })
+
+  var app6 = new Vue({
+    el: '#app6',
+    data: {
+      message: '안녕하세요 Vue!'
+    }
+  })
+
+  Vue.component('todo-item', {
+    props: ['todo'],
+    template: '<li> {{ todo.text }} </li>'
+  })
+
+  var app7 = new Vue({
+    el: '#app7',
+    data: {
+      groceryList: [
+        {id: 0, text: 'Vegetables'},
+        {id: 1, text: 'Cheese'},
+        {id: 2, text: 'Whatever'},
+      ]
+    }
+  })
+</script>
+</html>
