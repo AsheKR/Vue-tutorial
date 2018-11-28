@@ -1,0 +1,208 @@
+<script src="https://cdn.jsdelivr.net/npm/vue"></script>
+
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta http-equiv="X-UA-Compatible" content="ie=edge">
+  <title>Document</title>
+</head>
+<body>
+  <div id="example">
+    <my-component></my-component>
+  </div>
+  <div id="example2">
+    <my-component2></my-component2>
+    <my-component2></my-component2>
+  </div>
+  <div id="example3">
+    <my-component></my-component>
+    <my-component3></my-component3>
+    <my-component3></my-component3>
+    <my-component3></my-component3>
+  </div>
+  <div id="example4">
+    <prop-example message="갓갓갓"></prop-example>
+    <prop-example message="머용"></prop-example>
+  </div>
+  <div id="example5">
+    <input v-model="parentMsg" type="text">
+    <br>
+    <child v-bind:message="parentMsg"></child>
+  </div>
+
+  <div id="example6">
+    <my-component></my-component>
+    <todo-item v-bind="todo_data"></todo-item>
+    <todo-item v-bind="todo_data2"></todo-item>
+  </div>
+
+  <div id="example7">
+    <p>{{ total }}</p>
+    <button-counter v-on:increment="incrementTotal"></button-counter>
+    <button-counter v-on:increment="incrementTotal"></button-counter>
+    <button-counter v-on:increment="incrementTotal"></button-counter>
+  </div>
+
+  <div id="example8">
+    <my-component></my-component>
+    <currency-input v-model="price"></currency-input>
+  </div>
+
+
+
+
+
+</body>
+</html>
+
+<script>
+  // 전역 등록
+  Vue.component('my-component', {
+    template: '<div>사용자 정의 컴포넌트이다!</div>'
+  })
+
+  // example6
+  Vue.component('todo-item', {
+    props: ['text', 'isComplete'],
+    template: `<span>할일: {{ text }} <input type="checkbox" :checked="isComplete" /><br/></span>`
+  })
+
+  //example7
+  Vue.component('button-counter', {
+    template: '<button v-on:click="incrementCount">{{ counter }}</button>',
+    data: function() {
+      return {
+        counter: 0
+      }
+    },
+    methods: {
+      incrementCount: function() {
+        this.counter += 1
+        this.$emit('increment')
+      }
+    }
+  })
+
+  //example8
+  Vue.component('currency-input', {
+    template: '\
+    <span>\
+    $ \
+    <input \
+      ref="input" \
+      v-bind:value="value" \
+      v-on:input="updateValue($event.target.value)" >\
+      </span> \
+    ',
+    props: ['value'],
+    methods: {
+      updateValue: function() {
+        var formattedValue = value
+        .trim()
+        .slice(
+          0,
+          value.indexOf('.') === -1
+          ? value.length
+          : value.indexOf('.' + 3)
+        )
+
+        if (formattedValue !== value) {
+          this.$refs.input.value = formattedValue
+        }
+
+        this.$emit('input', Number(formattedValue))
+      }
+    }
+  })
+
+  new Vue({
+    el: '#example7',
+    data: {
+      total: 0
+    },
+    methods: {
+      incrementTotal: function() {
+        this.total += 1
+      }
+    }
+  })
+
+  // 루트 인스턴스 생성
+  new Vue({
+    el: '#example'
+  })
+
+  var Child = {
+    template: '<div>사용자 정의 컴포넌트2이당</div>'
+  }
+
+  // 지역 인스턴스
+  new Vue({
+    el: '#example2',
+    components: {
+      // <my-component>는 상위 템플릿에서만 사용할 수 있다.
+      'my-component2': Child
+    }
+  })
+
+  var data= {counter : 0}
+
+  new Vue({
+    el: '#example3',
+    components: {
+      'my-component3': {
+        template: '<button v-on:click="counter += 1">{{ counter }}</button>',
+        data: function() {
+          return data
+        }
+      }
+    }
+  })
+
+  // prop 사용법
+  new Vue({
+    el: '#example4',
+    components: {
+      'prop-example': {
+        props: ['message'],
+        template: '<span>{{ message }}</span>'
+      }
+    }
+  })
+
+  // props를 사용하여 부모의 입력을 자식의 결과로 받음
+  new Vue({
+    el: '#example5',
+    components: {
+      'child': {
+        props: ['message'],
+        template: '<span>{{ message }}</span>'
+      }
+    },
+    data: {
+      'parentMsg': '입력해라',
+    }
+  })
+
+  // Template에 data를 한번에 바인딩
+  new Vue({
+    el: '#example6',
+    data: {
+      todo_data: {
+        text: 'Learn Vue',
+        isComplete: false
+      },
+      todo_data2: {
+        text: '강아지처럼 짖기',
+        isComplete: true
+      }
+    }
+  })
+
+  new Vue({
+    el: '#example8'
+  })
+
+</script>
